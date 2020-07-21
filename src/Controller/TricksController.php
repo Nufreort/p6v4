@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 class TricksController extends AbstractController
@@ -26,13 +27,18 @@ class TricksController extends AbstractController
     /**
      * @Route("/new", name="tricks_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser('id');
+
         $trick = new Tricks();
         $form = $this->createForm(TricksType::class, $trick);
         $form->handleRequest($request);
 
+
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $form->setTrickAuthor($user);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($trick);
             $entityManager->flush();

@@ -25,12 +25,12 @@
                     </li>
                     <li class="nav-item">
                       {% if app.user %}
-                          <a class="nav-link" href="{{path('app_trickCreate')}}">Ajouter une figure</a>
+                          <a class="nav-link" href="{{path('tricks_new')}}">Ajouter une figure</a>
                       {% endif %}
                     </li>
                     <li class="nav-item">
                       {% if app.user %}
-                          <a class="nav-link" href="{{path('app_userProfil')}}">Mon profil</a>
+                          <a class="nav-link" href="#">Mon profil</a>
                       {% endif %}
                     </li>
                     <a href="{{path('app_register')}}"><button type="button" class="btn btn-success">S'inscrire</button></a>
