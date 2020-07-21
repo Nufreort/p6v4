@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TricksRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\Timestampable;
 
@@ -35,6 +37,22 @@ class Tricks
      * @ORM\Column(type="string", length=255)
      */
     private $trickGroup;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="tricks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $trickAuthor;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comments::class, mappedBy="trickId", orphanRemoval=true)
+     */
+    private $comments;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -73,6 +91,49 @@ class Tricks
     public function setTrickGroup(string $trickGroup): self
     {
         $this->trickGroup = $trickGroup;
+
+        return $this;
+    }
+
+    public function getTrickAuthor(): ?Users
+    {
+        return $this->trickAuthor;
+    }
+
+    public function setTrickAuthor(?Users $trickAuthor): self
+    {
+        $this->trickAuthor = $trickAuthor;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comments[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comments $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setTrickId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comments $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getTrickId() === $this) {
+                $comment->setTrickId(null);
+            }
+        }
 
         return $this;
     }
