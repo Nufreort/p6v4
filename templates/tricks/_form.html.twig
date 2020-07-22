@@ -1,4 +1,15 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
+        {% if app.request.attributes.get('_route') == 'tricks_edit' %}
+            <h2>Media</h2>
+            {% for medium in trick.media %}
+                <div>
+                    <img src="{{ asset('/uploads/' ~ medium.name) }}" alt="" width="150">
+
+                    {# On ajoute un lien permettant de supprimer une image (sera géré en Ajax) #}
+                    <a href="{{ path('tricks_delete_media', {id: medium.id})}}" data-delete data-token="{{ csrf_token('delete' ~ medium.id )}}">Supprimer</a>
+                </div>
+            {% endfor %}
+        {% endif %}
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

@@ -24,7 +24,7 @@ class Tricks
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $name;
 
@@ -50,7 +50,7 @@ class Tricks
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="tricks", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="tricks", orphanRemoval=true, cascade={"persist"})
      */
     private $media;
 

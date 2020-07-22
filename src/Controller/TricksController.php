@@ -4,15 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Tricks;
 use App\Entity\Comments;
+use App\Entity\Media;
 use App\Form\TricksType;
 use App\Form\CommentsType;
 use App\Repository\TricksRepository;
 use App\Repository\CommentsRepository;
+use App\Repository\MediaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class TricksController extends AbstractController
@@ -30,7 +33,7 @@ class TricksController extends AbstractController
     /**
      * @Route("/new", name="tricks_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, MediaRepository $mediaRepository): Response
     {
         $user = $this->getUser();
 
@@ -39,9 +42,25 @@ class TricksController extends AbstractController
         $form = $this->createForm(TricksType::class, $trick);
         $form->handleRequest($request);
 
-
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $media = $form->get('media')->getData();
+
+            foreach($media as $medium)
+                {
+                $fichier = md5(uniqid()).'.'.$medium->guessExtension();
+
+                $medium->move(
+                    $this->getParameter('media_directory'),
+                    $fichier
+                  );
+
+                $med = new Media();
+                $med->setName($fichier);
+                $med->setUsers($user);
+                $med->setTricks($trick);
+                $trick->addMedium($med);
+              }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($trick);
             $entityManager->flush();
@@ -65,8 +84,6 @@ class TricksController extends AbstractController
         $comment = new Comments();
         $comment->setCommentAuthor($user);
         $comment->setTrickId($trick);
-        //dd($comment);
-        //$comment-> $this->addComment();
 
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
@@ -96,10 +113,30 @@ class TricksController extends AbstractController
      */
     public function edit(Request $request, Tricks $trick): Response
     {
+        $user = $this->getUser();
+
         $form = $this->createForm(TricksType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+          $media = $form->get('media')->getData();
+
+          foreach($media as $medium)
+              {
+              $fichier = md5(uniqid()).'.'.$medium->guessExtension();
+
+              $medium->move(
+                  $this->getParameter('media_directory'),
+                  $fichier
+                );
+
+              $med = new Media();
+              $med->setName($fichier);
+              $med->setUsers($user);
+              $med->setTricks($trick);
+              $trick->addMedium($med);
+            }
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('tricks_index');
@@ -123,5 +160,30 @@ class TricksController extends AbstractController
         }
 
         return $this->redirectToRoute('tricks_index');
+    }
+
+    /**
+    * @Route("/delete/media/{id}", name="tricks_delete_media", methods={"GET","DELETE"})
+    */
+    public function deleteImage(Media $medium, Request $request){
+        $data = json_decode($request->getContent(), true);
+
+        // On vérifie si le token est valide
+        if($this->isCsrfTokenValid('delete'.$medium->getId(), $data['_token'])){
+            // On récupère le nom de l'image
+            $name = $medium->getName();
+            // On supprime le fichier
+            unlink($this->getParameter('media_directory').'/'.$name);
+
+            // On supprime l'entrée de la base
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($medium);
+            $em->flush();
+
+            // On répond en json
+            return new JsonResponse(['success' => 1]);
+        }else{
+            return new JsonResponse(['error' => 'Token Invalide'], 400);
+        }
     }
 }
