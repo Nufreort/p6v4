@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Tricks;
+use App\Entity\Comments;
 use App\Form\TricksType;
+use App\Form\CommentsType;
 use App\Repository\TricksRepository;
+use App\Repository\CommentsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,18 +30,18 @@ class TricksController extends AbstractController
     /**
      * @Route("/new", name="tricks_new", methods={"GET","POST"})
      */
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request): Response
     {
-        $user = $this->getUser('id');
+        $user = $this->getUser();
 
         $trick = new Tricks();
+        $trick->setTrickAuthor($user);
         $form = $this->createForm(TricksType::class, $trick);
         $form->handleRequest($request);
 
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $form->setTrickAuthor($user);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($trick);
             $entityManager->flush();
@@ -53,13 +56,39 @@ class TricksController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="tricks_show", methods={"GET"})
+     * @Route("/{id}", name="tricks_show", methods={"GET","POST"})
      */
-    public function show(Tricks $trick): Response
+    public function show(Request $request, Tricks $trick, CommentsRepository $commentsRepository): Response
     {
+        $user = $this->getUser();
+
+        $comment = new Comments();
+        $comment->setCommentAuthor($user);
+        $comment->setTrickId($trick);
+        //dd($comment);
+        //$comment-> $this->addComment();
+
+        $form = $this->createForm(CommentsType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('tricks_index');
+        }
+
+        $comments = $commentsRepository->findBy(
+          ['trickId' => $trick]
+        );
+
         return $this->render('tricks/show.html.twig', [
+            'comments' => $comments,
             'trick' => $trick,
+            'form' => $form->createView()
         ]);
+
     }
 
     /**
