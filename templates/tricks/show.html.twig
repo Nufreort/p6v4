@@ -1,4 +1,4 @@
-{% extends 'layout.html.twig' %}
+{% extends 'layoutDiscussion.html.twig' %}
 
 {% block pageTitle %}Tricks{% endblock %}
 
@@ -31,4 +31,7 @@
     <a href="{{ path('tricks_edit', {'id': trick.id}) }}">edit</a>
 
     {{ include('tricks/_delete_form.html.twig') }}
+
+    <a href="{{ path('comments_new', {'id': trick.id}) }}">Commenter</a>
+
 {% endblock %}

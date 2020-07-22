@@ -35,7 +35,9 @@
                     </li>
                     <a href="{{path('app_register')}}"><button type="button" class="btn btn-success">S'inscrire</button></a>
                     <a href="{{path('app_login')}}"><button type="button" class="btn btn-warning">Se connecter</button></a>
+                      {% if app.user %}
                     <a href="{{path('app_logout')}}"><button type="button" class="btn btn-danger">Se déconnecter</button></a>
+                      {% endif %}
                   </ul>
                 </div>
                 </nav>
@@ -78,6 +80,12 @@
                 {% block content %}
                 {% endblock %}
             </div>
+
+            <div id="commentContent" class="container">
+                {% block commentContent %}
+                {% endblock %}
+            </div>
+
 
             <footer class="relative-bottom">
                 <div class="card text-center">

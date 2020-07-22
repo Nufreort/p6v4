@@ -27,18 +27,18 @@ class TricksController extends AbstractController
     /**
      * @Route("/new", name="tricks_new", methods={"GET","POST"})
      */
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request): Response
     {
-        $user = $this->getUser('id');
+        $user = $this->getUser();
 
         $trick = new Tricks();
+        $trick->setTrickAuthor($user);
         $form = $this->createForm(TricksType::class, $trick);
         $form->handleRequest($request);
 
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $form->setTrickAuthor($user);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($trick);
             $entityManager->flush();

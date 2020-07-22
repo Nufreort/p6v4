@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Comments;
+use App\Entity\Tricks;
 use App\Form\CommentsType;
 use App\Repository\CommentsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @Route("/comments")
@@ -26,11 +28,18 @@ class CommentsController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="comments_new", methods={"GET","POST"})
+     * @Route("/new/{id}", name="comments_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Tricks $trick): Response
     {
+        $user = $this->getUser();
+        $trick = $trick->getId();
+        dd($trick);
+
         $comment = new Comments();
+        $comment->setCommentAuthor($user);
+        $comment->setTrickId($trick);
+
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
 
