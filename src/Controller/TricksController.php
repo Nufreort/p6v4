@@ -9,6 +9,7 @@ use App\Form\TricksType;
 use App\Form\CommentsType;
 use App\Repository\TricksRepository;
 use App\Repository\CommentsRepository;
+use App\Repository\UsersRepository;
 use App\Repository\MediaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,7 +78,7 @@ class TricksController extends AbstractController
     /**
      * @Route("/{id}", name="tricks_show", methods={"GET","POST"})
      */
-    public function show(Request $request, Tricks $trick, CommentsRepository $commentsRepository): Response
+    public function show(Request $request, Tricks $trick, CommentsRepository $commentsRepository, UsersRepository $usersRepository): Response
     {
         $user = $this->getUser();
 
@@ -103,9 +104,12 @@ class TricksController extends AbstractController
         $comments = $commentsRepository->findBy(
           ['trickId' => $trick]
         );
+        //dd($comments);
+        $authors = $usersRepository->findall();
 
         return $this->render('tricks/show.html.twig', [
             'comments' => $comments,
+            'authors' => $authors,
             'trick' => $trick,
             'form' => $form->createView()
         ]);

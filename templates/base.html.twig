@@ -12,46 +12,40 @@
     <body>
         {% block body %}
             <header>
-                <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <a class="navbar-brand" href="{{path('tricks_index')}}">SnowTricks</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
+                <nav class="d-flex navbar navbar-expand-lg navbar-dark bg-primary">
+                    <a class="navbar-brand" href="{{path('tricks_index')}}"><img src="../public/img/logo-snowtricks-blanc.png" alt="logo SnowTricks" width="300"/></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
 
-                <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                  <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item active">
-                      <a class="nav-link" href="{{path('tricks_index')}}">Accueil<span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                      {% if app.user %}
-                          <a class="nav-link" href="{{path('tricks_new')}}">Ajouter une figure</a>
-                      {% endif %}
-                    </li>
-                    <li class="nav-item">
-                      {% if app.user %}
-                          <a class="nav-link" href="#">Mon profil</a>
-                      {% endif %}
-                    </li>
-                    <a href="{{path('app_register')}}"><button type="button" class="btn btn-success">S'inscrire</button></a>
-                    <a href="{{path('app_login')}}"><button type="button" class="btn btn-warning">Se connecter</button></a>
-                      {% if app.user %}
-                    <a href="{{path('app_logout')}}"><button type="button" class="btn btn-danger">Se déconnecter</button></a>
-                      {% endif %}
-                  </ul>
-                </div>
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                          <a class="nav-link" href="{{path('tricks_index')}}">Accueil<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                          {% if app.user %}
+                              <a class="nav-link" href="{{path('tricks_new')}}">Ajouter une figure</a>
+                          {% endif %}
+                        </li>
+                        <a href="{{path('app_register')}}"><button type="button" class="btn btn-success">S'inscrire</button></a>
+                        <a href="{{path('app_login')}}"><button type="button" class="btn btn-warning">Se connecter</button></a>
+                          {% if app.user %}
+                        <a href="{{path('app_logout')}}"><button type="button" class="btn btn-danger">Se déconnecter</button></a>
+                          {% endif %}
+                      </ul>
+                    </div>
                 </nav>
             </header>
 
-            <div class="bg-success">
-                {% if app.user %}
-                    <div class="mb-3 text-center">
-                        Bienvenue {{ app.user.firstName }} ! Vous êtes connecté.
-                    </div>
-                {% endif %}
-            </div>
-
             <div class="card text-center">
+              <div class="bg-success ">
+                  {% if app.user %}
+                      <div class="mb-3 align-middle font-weight-bold">
+                          <span>Bienvenue {{ app.user.firstName }} ! Vous êtes connecté.</span>
+                      </div>
+                  {% endif %}
+              </div>
                 <div class="card-header">
                     {% block pageTitle %}
                     {% endblock %}

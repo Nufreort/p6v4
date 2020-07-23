@@ -3,6 +3,7 @@
 {% block pageTitle %}<h1 class="">Connexion</h1>{% endblock %}
 
 {% block content %}
+
 <form method="post">
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -10,12 +11,14 @@
 
     <label for="inputEmail">Email :</label>
     <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
+    <br />
     <label for="inputPassword">Password :</label>
     <input type="password" name="password" id="inputPassword" class="form-control" required>
 
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}"
     >
+    <br />
 
     {#
         Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
