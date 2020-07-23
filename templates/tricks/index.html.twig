@@ -1,6 +1,6 @@
 {% extends 'layout.html.twig' %}
 
-{% block pageTitle %}Tricks index{% endblock %}
+{% block pageTitle %}<h1>Accueil</h1>{% endblock %}
 
 {% block hero %}
 <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
@@ -12,8 +12,6 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Tricks index</h1>
-
     <table class="table">
         <thead>
             <tr>
@@ -53,6 +51,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('tricks_new') }}">Create new</a>
 {% endblock %}

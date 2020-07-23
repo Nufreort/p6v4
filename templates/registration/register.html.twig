@@ -1,22 +1,33 @@
 {% extends 'layout.html.twig' %}
 
-{% block pageTitle %}Register{% endblock %}
+{% block pageTitle %}<h1>Inscription</h1>{% endblock %}
 
 {% block content %}
     {% for flashError in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
     {% endfor %}
 
-    <h1>Register</h1>
+    <div>
+      <p>
+          En vous inscrivant sur ce site, vous rejoindrez une communauté de passionné de snowboard.
+          N'attendez plus pour partager vos tricks !
+      </p>
+    </div>
 
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.lastName) }}
-        {{ form_row(registrationForm.firstName) }}
-        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.lastName, {
+            label: 'Nom : '
+        }) }}
+        {{ form_row(registrationForm.firstName, {
+            label: 'Prénom : '
+        }) }}
+        {{ form_row(registrationForm.email, {
+            label: 'Email : '
+        }) }}
         {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
+            label: 'Mot de passe : '
         }) }}
 
-        <button type="submit" class="btn">Register</button>
+        <button type="submit" class="btn">Envoyer</button>
     {{ form_end(registrationForm) }}
 {% endblock %}

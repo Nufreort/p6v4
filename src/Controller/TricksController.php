@@ -81,6 +81,7 @@ class TricksController extends AbstractController
     {
         $user = $this->getUser();
 
+
         $comment = new Comments();
         $comment->setCommentAuthor($user);
         $comment->setTrickId($trick);
@@ -93,7 +94,10 @@ class TricksController extends AbstractController
             $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('tricks_index');
+
+            return $this->redirectToRoute('tricks_show', [
+              'id' => $trick->getId()
+            ]);
         }
 
         $comments = $commentsRepository->findBy(

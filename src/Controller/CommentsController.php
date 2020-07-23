@@ -33,6 +33,7 @@ class CommentsController extends AbstractController
     public function new(Request $request): Response
     {
         $user = $this->getUser();
+        $trick = $this->getTrickId();
 
         $comment = new Comments();
         $comment->setCommentAuthor($user);
@@ -45,7 +46,7 @@ class CommentsController extends AbstractController
             $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('comments_index');
+            return $this->redirectToRoute('tricks_show');
         }
 
         return $this->render('comments/new.html.twig', [
