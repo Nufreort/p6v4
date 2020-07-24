@@ -82,7 +82,6 @@ class TricksController extends AbstractController
     {
         $user = $this->getUser();
 
-
         $comment = new Comments();
         $comment->setCommentAuthor($user);
         $comment->setTrickId($trick);

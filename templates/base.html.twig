@@ -12,41 +12,56 @@
     <body>
         {% block body %}
             <header>
-                <nav class="d-flex navbar navbar-expand-lg navbar-dark bg-primary">
-                    <a class="navbar-brand" href="{{path('tricks_index')}}"><img src="../public/img/logo-snowtricks-blanc.png" alt="logo SnowTricks" width="300"/></a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                      <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                        <li class="nav-item active">
-                          <a class="nav-link" href="{{path('tricks_index')}}">Accueil<span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                          {% if app.user %}
-                              <a class="nav-link" href="{{path('tricks_new')}}">Ajouter une figure</a>
-                          {% endif %}
-                        </li>
-                        <a href="{{path('app_register')}}"><button type="button" class="btn btn-success">S'inscrire</button></a>
-                        <a href="{{path('app_login')}}"><button type="button" class="btn btn-warning">Se connecter</button></a>
-                          {% if app.user %}
-                        <a href="{{path('app_logout')}}"><button type="button" class="btn btn-danger">Se déconnecter</button></a>
-                          {% endif %}
-                      </ul>
+                <nav class="row navbar navbar-expand-lg navbar-dark bg-primary">
+                    <div class="col">
+                      <a class="navbar-brand" href="{{path('tricks_index')}}"><img src="../public/img/logo-snowtricks-blanc.png" alt="logo SnowTricks" width="300"/></a>
                     </div>
+
+                    <div class="col">
+                      <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                      </button>
+                      <div class="collapse navbar-collapse float-right" id="navbarTogglerDemo02">
+                        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                          <li class="nav-item active">
+                            <a class="nav-link text-dark" href="{{path('tricks_index')}}"><button type="button" class="btn btn-light text-nowrap">Accueil<span class="sr-only">(current)</span></button></a>
+
+                          </li>
+                          {% if app.user %}
+                            <li class="nav-item">
+                              <a class="nav-link text-dark" href="{{path('tricks_new')}}"><button type="button" class="btn btn-light text-nowrap">Ajouter une figure</button></a>
+
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link text-dark" href="{{path('app_userProfil')}}"><button type="button" class="btn btn-light text-nowrap">Mon profil</button></a>
+
+                            </li>
+                            <li class="nav-item">
+
+                                <a class="nav-link text-dark" href="{{path('app_logout')}}"><button type="button" class="btn btn-danger text-nowrap">Se déconnecter</button></a>
+                            </li>
+                          {% else %}
+                            <li class="nav-item">
+                              <a class="nav-link text-dark" href="{{path('app_register')}}"><button type="button" class="btn btn-success text-nowrap">S'inscrire</button></a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link text-dark"href="{{path('app_login')}}"><button type="button" class="btn btn-warning text-nowrap">Se connecter</button></a>
+                            </li>
+                          {% endif %}
+                        </ul>
+                      </div>
+                    </div>
+
                 </nav>
             </header>
 
             <div class="card text-center">
-              <div class="bg-success ">
+              <div class="alert alert-primary font-weight-bold">
                   {% if app.user %}
-                      <div class="mb-3 align-middle font-weight-bold">
-                          <span>Bienvenue {{ app.user.firstName }} ! Vous êtes connecté.</span>
-                      </div>
+                          Bienvenue {{ app.user.firstName }} ! Vous êtes connecté.
                   {% endif %}
               </div>
-                <div class="card-header">
+                <div class="alert alert-dark">
                     {% block pageTitle %}
                     {% endblock %}
                 </div>

@@ -31,8 +31,8 @@ class TricksType extends AbstractType
                 'Les barres de slide' => 'Les barres de slide',
               ]
             ])
-            ->add('media',FileType::class,[
-                'label' => false,
+            ->add('media', FileType::class,[
+                'label' => true,
                 'multiple' => true,
                 'mapped' => false,
                 'required' => false

@@ -67,6 +67,11 @@ class Users implements UserInterface
      */
     private $media;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Media::class, cascade={"persist", "remove"})
+     */
+    private $userPicture;
+
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
@@ -265,6 +270,18 @@ class Users implements UserInterface
                 $medium->setUsers(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUserPicture(): ?Media
+    {
+        return $this->userPicture;
+    }
+
+    public function setUserPicture(?Media $userPicture): self
+    {
+        $this->userPicture = $userPicture;
 
         return $this;
     }

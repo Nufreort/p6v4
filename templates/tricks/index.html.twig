@@ -7,10 +7,13 @@
   <div class="carousel-inner card bg-dark">
     <div class="carousel-item active">
       <img src="../public/img/snowboard-header.jpg" class="card-img" alt="..." style="opacity: 0.5">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>T'es un roi de la glisse et tu veux veux le faire savoir ?</h5>
-        <p>Alors rejoins la communauté et affiche tes plus beaux tricks !</p>
-        <a class="btn btn-primary btn-lg align-self-center" href="{{path('app_register')}}" role="button">Inscris-toi !</a>
+      <div class="d-flex flex-nowrap flex-column carousel-caption d-md-block ">
+        <h5 class="" style="font-size:5vw;">T'es un roi de la glisse et tu veux veux le faire savoir ?</h5>
+        <p class="d-none d-md-block" style="font-size:2vw;">Alors rejoins la communauté et affiche tes plus beaux tricks !</p>
+        <a class="nav-link text-dark" href="{{path('app_register')}}"><button type="button" class="btn btn-primary text-nowrap">Inscris-toi !</button></a>
+      </div>
+      <div class="text-left">
+        <a><button type="button" class="btn sm btn-dark" data-toggle="collapse" data-target="#tricksIndex">Tricks</button></a>
       </div>
     </div>
   </div>
@@ -18,10 +21,13 @@
 {% endblock %}
 
 {% block content %}
+<div id="tricksIndex" class="container-fluid collapse">
+    <h2 class="text-center">Nos plus beaux tricks !</h2>
+    <br />
         <div class="row">
           {% for trick in tricks %}
-          <div class="col-md-4">
-            <img src="../public/img/snowboard-default.png" class="card-img-top" alt="..." width="50">
+          <div class="col-md-3">
+            <img src="../public/img/snowboard-default.png" class="card-img-top" alt="..." width="25">
             <h2><a href="{{ path('tricks_show', {'id': trick.id}) }}">{{ trick.name }}</a></h2>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">{{ trick.trickGroup }}</li>
@@ -37,11 +43,11 @@
             {{ include('tricks/_delete_form.html.twig') }}</p>
           </div>
 
-
         {% else %}
             <p>
               Pas encore de figure ajouté. Soyez le premier à en ajouter un !
             </p>
         {% endfor %}
         </div>
+</div>
 {% endblock %}

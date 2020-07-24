@@ -22,6 +22,8 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //  $userPicture = new Media();
+            // $user->setUserPicture('userPicture');
             // encode the plain password
             $user->setPassword(
                 $passwordEncoder->encodePassword(
@@ -41,5 +43,44 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/profil", name="app_userProfil")
+     */
+    public function profilUpdate(): Response
+    {
+            return $this->render('registration/userProfil.html.twig');
+        /*    $form = $this->createForm(RegistrationFormType::class, $user);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $em->flush();
+                $this->addFlash('infos','Votre profil a bien été modifiée !');
+                return $this->redirectToRoute('app_index');
+              }
+            return $this->render('registration/userProfil.html.twig', [
+              'user' => $user,
+              'form' => $form->CreateView()
+              ]);*/
+    }
+
+    /**
+     * @Route("/user/{id}/delete", name="app_userProfilDelete")
+     */
+    public function userProfilDelete(Request $request, User $users, EntityManagerInterface $em): Response
+    {
+            if($this->isCsrfTokenValid('userProfilDeleting_' . $users->getId(), $request->request->get('csrf_token'))){
+              $em->remove($users);
+              $em->flush();
+
+              $session = new Session();
+              $session->invalidate();
+
+              //$this->addFlash('infos','Votre profil a bien été supprimée !');
+
+              return $this->redirectToRoute('app_logout');
+            }
+
+            return $this->redirectToRoute('app_index');
     }
 }
