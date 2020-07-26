@@ -68,10 +68,14 @@ class UsersAuthenticator extends AbstractFormLoginAuthenticator implements Passw
         }
 
         $user = $this->entityManager->getRepository(Users::class)->findOneBy(['email' => $credentials['email']]);
-
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
+            throw new CustomUserMessageAuthenticationException('E-mail non identifié.');
+        }
+
+        elseif($user->isVerified() == false)
+        {
+            throw new CustomUserMessageAuthenticationException('Veuillez valider votre e-mail pour vous connecter.');
         }
 
         return $user;

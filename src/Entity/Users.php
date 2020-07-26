@@ -77,6 +77,11 @@ class Users implements UserInterface
      */
     private $isVerified = false;
 
+    /**
+     * @ORM\OneToOne(targetEntity=UsersPictures::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $usersPictures;
+
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
@@ -299,6 +304,23 @@ class Users implements UserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getUsersPictures(): ?UsersPictures
+    {
+        return $this->usersPictures;
+    }
+
+    public function setUsersPictures(UsersPictures $usersPictures): self
+    {
+        $this->usersPictures = $usersPictures;
+
+        // set the owning side of the relation if necessary
+        if ($usersPictures->getUser() !== $this) {
+            $usersPictures->setUser($this);
+        }
 
         return $this;
     }
