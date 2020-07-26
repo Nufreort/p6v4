@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Users;
+use App\Entity\UsersPictures;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -20,11 +21,12 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('lastName')
             ->add('firstName')
-            ->add('userPicture', FileType::class,[
-                'label' => true,
+            ->add('usersPictures', FileType::class,[
+                'label' => 'Votre photo de profil',
                 'multiple' => false,
                 'mapped' => false,
-                'required' => false
+                'required' => false,
+                'empty_data' => 'naruto.png'
             ])
             ->add('email')
             ->add('plainPassword', PasswordType::class, [

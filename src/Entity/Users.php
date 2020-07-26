@@ -68,11 +68,6 @@ class Users implements UserInterface
     private $media;
 
     /**
-     * @ORM\OneToOne(targetEntity=Media::class, cascade={"persist", "remove"})
-     */
-    private $userPicture;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;

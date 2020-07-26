@@ -11,13 +11,21 @@
       Prénom : {{ app.user.firstName }}
     </p>
     <p>
-      Photo de profil : {{ app.user.userPicture }}
+      Photo de profil :
+      <div class="">
+        {% if app.user.usersPictures %}
+          <img src="usersPictures/{{app.user.usersPictures.name}}" width="100" />
+        {% else %}
+          <img src="usersPictures/naruto.png" width="50" />
+        {% endif %}
+      </div>
+
     </p>
     <p>
       Email : {{ app.user.email }}
     </p>
     <p>
-      Mot de passe :{{ app.user.password }}
+      Mot de passe : {{ app.user.password }}
     </p>
     <p>
       Date d'inscription : {{ app.user.createdAt|date('d/m/Y') }}

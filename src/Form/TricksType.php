@@ -37,6 +37,12 @@ class TricksType extends AbstractType
                 'mapped' => false,
                 'required' => false
             ])
+            ->add('video', FileType::class,[
+                'label' => true,
+                'multiple' => true,
+                'mapped' => false,
+                'required' => false
+            ])
         ;
     }
 

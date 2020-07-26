@@ -53,6 +53,7 @@
             <thead>
                 <tr>
                     <th>Date</th>
+                    <th>Photo</th>
                     <th>Auteur</th>
                     <th>Message</th>
                     <th>Actions</th>
@@ -62,6 +63,13 @@
             {% for comment in comments %}
                 <tr>
                     <td>{{ comment.createdAt|format_datetime('short', 'short', locale='fr') }}</td>
+                    <td>
+                      {% if comment.commentAuthor.usersPictures.name %}
+                        <img src="usersPictures/{{comment.commentAuthor.usersPictures.name}}" width="100"/>
+                      {% else %}
+                          <img src="usersPictures/naruto.png" width="100"/>
+                      {% endif %}
+                    </td>
                     <td>{{ comment.commentAuthor.lastName ~ ' ' ~ comment.commentAuthor.firstName}}</td>
                     <td>{{ comment.content }}</td>
                     <td>

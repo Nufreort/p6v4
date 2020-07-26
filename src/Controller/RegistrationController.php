@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Users;
+use App\Entity\UsersPictures;
 use App\Form\RegistrationFormType;
+use App\Repository\UsersPicturesRepository;
+use App\Repository\UsersRepository;
 use App\Security\EmailVerifier;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,16 +29,28 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, UsersPicturesRepository $usersPicturesRepository): Response
     {
         $user = new Users();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
+
+
         if ($form->isSubmitted() && $form->isValid()) {
-            //  $userPicture = new Media();
-            // $user->setUserPicture('userPicture');
-            // encode the plain password
+            // usersPicutres
+            $picture = $form->get('usersPictures')->getData();
+
+            $fichier = md5(uniqid()).'.'.$picture->guessExtension();
+
+            $picture->move(
+              $this->getParameter('usersPictures'),
+              $fichier
+            );
+
+              $img = new UsersPictures();
+              $img->setName($fichier);
+              $user->setUsersPictures($img);
 
             // encode the plain password
             $user->setPassword(
@@ -85,15 +100,16 @@ class RegistrationController extends AbstractController
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Votre adresse e-mail a bient été vérifiée !');
-
         return $this->redirectToRoute('app_login');
     }
 
     /**
      * @Route("/profil", name="app_userProfil")
      */
-    public function profilUpdate(): Response
+    public function profilUpdate(Request $request, UsersPicturesRepository $usersPicturesRepository, UsersRepository $usersRepository): Response
     {
+            $user = $this->getUser();
+
             return $this->render('registration/userProfil.html.twig');
         /*    $form = $this->createForm(RegistrationFormType::class, $user);
             $form->handleRequest($request);

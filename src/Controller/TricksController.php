@@ -103,9 +103,9 @@ class TricksController extends AbstractController
         $comments = $commentsRepository->findBy(
           ['trickId' => $trick]
         );
-        //dd($comments);
-        $authors = $usersRepository->findall();
 
+        $authors = $usersRepository->findall();
+        //dd($comments);
         return $this->render('tricks/show.html.twig', [
             'comments' => $comments,
             'authors' => $authors,
