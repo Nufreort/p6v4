@@ -72,6 +72,11 @@ class Users implements UserInterface
      */
     private $userPicture;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isVerified = false;
+
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
@@ -282,6 +287,18 @@ class Users implements UserInterface
     public function setUserPicture(?Media $userPicture): self
     {
         $this->userPicture = $userPicture;
+
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }

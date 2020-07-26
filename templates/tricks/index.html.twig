@@ -10,11 +10,18 @@
       <div class="d-flex flex-nowrap flex-column carousel-caption d-md-block ">
         <h5 class="" style="font-size:5vw;">T'es un roi de la glisse et tu veux veux le faire savoir ?</h5>
         <p class="d-none d-md-block" style="font-size:2vw;">Alors rejoins la communauté et affiche tes plus beaux tricks !</p>
-        <a class="nav-link text-dark" href="{{path('app_register')}}"><button type="button" class="btn btn-primary text-nowrap">Inscris-toi !</button></a>
+        <a class="nav-link text-dark" href="{{path('app_register')}}"><button type="button" class="btn btn-primary text-nowrap ">Inscris-toi !</button></a>
       </div>
-      <div class="text-left">
-        <a><button type="button" class="btn sm btn-dark" data-toggle="collapse" data-target="#tricksIndex">Tricks</button></a>
-      </div>
+    </div>
+    <div class="d-flex flex-row-reverse">
+      <a>
+        <button type="button" class="btn sm btn-dark btn-sm" data-toggle="collapse" data-target="#tricksIndex">
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-double-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+            <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+          </svg>
+        </button>
+      </a>
     </div>
   </div>
 </div>
@@ -26,21 +33,20 @@
     <br />
         <div class="row">
           {% for trick in tricks %}
-          <div class="col-md-3">
+          <div class="card col-3">
             <img src="../public/img/snowboard-default.png" class="card-img-top" alt="..." width="25">
-            <h2><a href="{{ path('tricks_show', {'id': trick.id}) }}">{{ trick.name }}</a></h2>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">{{ trick.trickGroup }}</li>
-            </ul>
-            <p>{{  trick.description|u.truncate(200, '...') }}</p>
-            <p><a href="{{ path('tricks_edit', {'id': trick.id}) }}">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z"/>
-                    <path fill-rule="evenodd" d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z"/>
-                    <path d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z"/>
-                </svg>
-            </a>
-            {{ include('tricks/_delete_form.html.twig') }}</p>
+            <div class="card-body d-flex flex-row">
+                <a href="{{ path('tricks_show', {'id': trick.id}) }}">{{ trick.name }}</a>
+                <p><a href="{{ path('tricks_edit', {'id': trick.id}) }}">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z"/>
+                        <path fill-rule="evenodd" d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z"/>
+                        <path d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z"/>
+                    </svg>
+                </a>
+                <a>{{ include('tricks/_delete_form.html.twig') }}</p></a>
+            </div>
+
           </div>
 
         {% else %}
@@ -49,5 +55,26 @@
             </p>
         {% endfor %}
         </div>
+        <div class="col-md-12 text-center">
+          <div>
+              <button id="showMore"><span>Show More</span></button>
+          </div>
+        </div>
+
+        <script>
+            $("showMore").click(function(){
+              $("#boxs .box:hidden").slice(0,3).slideDown();
+              if($("#boxs .box:hidden").length == 0) {
+                $("ShowMore").fadeOut("slow");
+              }
+            });
+        </script>
+
+        <script>
+          $(function(){
+              $()
+          })
+        </script>
+
 </div>
 {% endblock %}
