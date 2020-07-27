@@ -34,6 +34,11 @@ class Media
      */
     private $Users;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $videos;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,6 +76,18 @@ class Media
     public function setUsers(?Users $Users): self
     {
         $this->Users = $Users;
+
+        return $this;
+    }
+
+    public function getVideos(): ?string
+    {
+        return $this->videos;
+    }
+
+    public function setVideos(?string $videos): self
+    {
+        $this->videos = $videos;
 
         return $this;
     }

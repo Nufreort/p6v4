@@ -54,6 +54,11 @@ class Tricks
      */
     private $media;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $videos;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -171,6 +176,18 @@ class Tricks
                 $medium->setTricks(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getVideos(): ?string
+    {
+        return $this->videos;
+    }
+
+    public function setVideos(?string $videos): self
+    {
+        $this->videos = $videos;
 
         return $this;
     }

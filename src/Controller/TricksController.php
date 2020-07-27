@@ -144,6 +144,7 @@ class TricksController extends AbstractController
               $trick->addMedium($med);
             }
 
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('tricks_index');

@@ -6,6 +6,7 @@ use App\Entity\Tricks;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -32,17 +33,12 @@ class TricksType extends AbstractType
               ]
             ])
             ->add('media', FileType::class,[
-                'label' => true,
+                'label' => 'Ajouter une ou plusieurs image(s)',
                 'multiple' => true,
                 'mapped' => false,
                 'required' => false
             ])
-            ->add('video', FileType::class,[
-                'label' => true,
-                'multiple' => true,
-                'mapped' => false,
-                'required' => false
-            ])
+            ->add('videos', TextareaType::class)
         ;
     }
 
