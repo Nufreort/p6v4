@@ -99,6 +99,18 @@
     "egulias/email-validator": {
         "version": "2.1.18"
     },
+    "essence/dom": {
+        "version": "1.0.0"
+    },
+    "essence/essence": {
+        "version": "3.5.2"
+    },
+    "essence/http": {
+        "version": "1.0.0"
+    },
+    "fg/parkour": {
+        "version": "1.1.1"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {
