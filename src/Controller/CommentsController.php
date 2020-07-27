@@ -96,6 +96,6 @@ class CommentsController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('comments_index');
+        return $this->redirectToRoute('tricks_index');
     }
 }

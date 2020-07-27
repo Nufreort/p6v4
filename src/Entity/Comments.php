@@ -34,7 +34,7 @@ class Comments
 
     /**
      * @ORM\ManyToOne(targetEntity=Tricks::class, inversedBy="comments")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $trickId;
 

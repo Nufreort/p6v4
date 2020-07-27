@@ -26,7 +26,7 @@ class RegistrationFormType extends AbstractType
                 'multiple' => false,
                 'mapped' => false,
                 'required' => false,
-                'empty_data' => 'naruto.png'
+                //'empty_data' => 'public/usersPictures/naruto.png'
             ])
             ->add('email')
             ->add('plainPassword', PasswordType::class, [

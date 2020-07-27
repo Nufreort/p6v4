@@ -39,17 +39,25 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // usersPicutres
-            $picture = $form->get('usersPictures')->getData();
+              $picture = $form->get('usersPictures')->getData();
 
-            $fichier = md5(uniqid()).'.'.$picture->guessExtension();
+              if($picture)
+              {
+              $fichier = md5(uniqid()).'.'.$picture->guessExtension();
 
-            $picture->move(
-              $this->getParameter('usersPictures'),
-              $fichier
-            );
+              $picture->move(
+                $this->getParameter('usersPictures'),
+                $fichier
+              );
+            }
 
               $img = new UsersPictures();
-              $img->setName($fichier);
+              if(isset($fichier)){
+                $img->setName($fichier);
+              }
+              else {
+                $img->setName('naruto.png');
+              }
               $user->setUsersPictures($img);
 
             // encode the plain password
@@ -85,7 +93,7 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/verify/email", name="app_verify_email")
      */
-    public function verifyUserEmail(Request $request): Response
+    public function verifyUserEmail(Request $request, UsersPicturesRepository $usersPicturesRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -95,12 +103,13 @@ class RegistrationController extends AbstractController
         } catch (VerifyEmailExceptionInterface $exception) {
         $this->addFlash('verify_email_error', 'Veuillez valider le lien de confirmation que vous avez reçu par e-mail ou bien créer un compte pour vous connecter.'/* $exception->getReason()*/);
 
-            return $this->redirectToRoute('app_register');
+            return $this->redirectToRoute('app_login');
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
+        $this->handleEmailConfirmation();
         $this->addFlash('success', 'Votre adresse e-mail a bient été vérifiée !');
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('tricks_index');
     }
 
     /**

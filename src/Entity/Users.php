@@ -73,7 +73,7 @@ class Users implements UserInterface
     private $isVerified = false;
 
     /**
-     * @ORM\OneToOne(targetEntity=UsersPictures::class, mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=UsersPictures::class, mappedBy="user", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $usersPictures;
 
