@@ -55,14 +55,17 @@ class Tricks
     private $media;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\OneToMany(targetEntity=Videos::class, mappedBy="tricks")
      */
     private $videos;
+
+
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->media = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -180,14 +183,33 @@ class Tricks
         return $this;
     }
 
-    public function getVideos(): ?string
+    /**
+     * @return Collection|Videos[]
+     */
+    public function getVideos(): Collection
     {
         return $this->videos;
     }
 
-    public function setVideos(?string $videos): self
+    public function addVideo(Videos $video): self
     {
-        $this->videos = $videos;
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+            $video->setTricks($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Videos $video): self
+    {
+        if ($this->videos->contains($video)) {
+            $this->videos->removeElement($video);
+            // set the owning side to null (unless already changed)
+            if ($video->getTricks() === $this) {
+                $video->setTricks(null);
+            }
+        }
 
         return $this;
     }

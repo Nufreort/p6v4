@@ -16,9 +16,14 @@ class TricksType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('description')
+            ->add('name', null, [
+                'label' => 'Nom de la figure :'
+            ])
+            ->add('description', null, [
+                'label' => 'Description de la figure :'
+              ])
             ->add('trickGroup', ChoiceType::class, [
+              'label' => 'Choisir le type de la figure :',
               'choices' => [
                 'Les rides' => 'Les rides',
                 'Les grabs' => 'Les grabs',
@@ -33,12 +38,15 @@ class TricksType extends AbstractType
               ]
             ])
             ->add('media', FileType::class,[
-                'label' => 'Ajouter une ou plusieurs image(s)',
+                'label' => 'Ajouter une ou plusieurs image(s) :',
                 'multiple' => true,
                 'mapped' => false,
                 'required' => false
             ])
-            ->add('videos', TextareaType::class)
+          /*  ->add('videos', TextareaType::class, [
+                'label' => 'Intégrer une vidéo youtube :',
+                'required' => false
+            ]) */
         ;
     }
 

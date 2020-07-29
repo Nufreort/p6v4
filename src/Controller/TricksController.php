@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Knp\Component\Pager\PaginatorInterface;
 
 
 class TricksController extends AbstractController
@@ -36,6 +37,7 @@ class TricksController extends AbstractController
      */
     public function new(Request $request, MediaRepository $mediaRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
 
         $trick = new Tricks();
@@ -44,6 +46,7 @@ class TricksController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //add image
             $media = $form->get('media')->getData();
 
             foreach($media as $medium)
@@ -56,11 +59,25 @@ class TricksController extends AbstractController
                   );
 
                 $med = new Media();
-                $med->setName($fichier);
+                if(isset($fichier)){
+                  $med->setName($fichier);
+                }
+                else{
+                  $med->setName('snowboard-default.jpg');
+                }
                 $med->setUsers($user);
                 $med->setTricks($trick);
                 $trick->addMedium($med);
               }
+            //add video
+            dd($form->get('videos')->getData());
+            if(null !== $form->get('videos')->getData()){
+                $vid = $form->get('videos');
+                $video = new Video();
+                $video->setIframe($vid);
+                $video->setTricks($trick);
+                $trick->addVideo($video);
+            }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($trick);
@@ -78,10 +95,9 @@ class TricksController extends AbstractController
     /**
      * @Route("/{id}", name="tricks_show", methods={"GET","POST"})
      */
-    public function show(Request $request, Tricks $trick, CommentsRepository $commentsRepository, UsersRepository $usersRepository): Response
+    public function show(Request $request, Tricks $trick, CommentsRepository $commentsRepository, UsersRepository $usersRepository, PaginatorInterface $paginator): Response
     {
         $user = $this->getUser();
-
         $comment = new Comments();
         $comment->setCommentAuthor($user);
         $comment->setTrickId($trick);
@@ -100,8 +116,15 @@ class TricksController extends AbstractController
             ]);
         }
 
-        $comments = $commentsRepository->findBy(
-          ['trickId' => $trick]
+        $data = $commentsRepository->findBy(
+          ['trickId' => $trick],
+          ['createdAt' => 'DESC']
+        );
+
+        $comments = $paginator->paginate(
+          $data,
+          $request->query->getInt('page', 1),
+          10
         );
 
         $authors = $usersRepository->findall();
@@ -116,16 +139,32 @@ class TricksController extends AbstractController
     }
 
     /**
+     * @Route("/{id}/comment/", name="comment_delete", methods={"GET","POST"})
+     */
+    public function deleteComment(Request $request, Tricks $trick, Comments $comment, CommentsRepository $commentsRepository, UsersRepository $usersRepository, PaginatorInterface $paginator): Response
+    {
+
+      $comment = $commentsRepository->findOneBy(['id' => $comment->getId()]);
+
+      $this->removeComment($comment);
+
+      return $this->redirectToRoute('tricks_index');
+    }
+
+    /**
      * @Route("/{id}/edit", name="tricks_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Tricks $trick): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $user = $this->getUser();
 
         $form = $this->createForm(TricksType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+          // add image
           $media = $form->get('media')->getData();
 
           foreach($media as $medium)
@@ -144,6 +183,14 @@ class TricksController extends AbstractController
               $trick->addMedium($med);
             }
 
+            //add video
+            if(null !== $form->get('videos')->getData()){
+                $vid = $form->get('videos');
+                $video = new Video();
+                $video->setIframe($vid);
+                $video->setTricks($trick);
+                $trick->addVideo($video);
+            }
 
             $this->getDoctrine()->getManager()->flush();
 
@@ -161,6 +208,8 @@ class TricksController extends AbstractController
      */
     public function delete(Request $request, Tricks $trick): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($trick);
@@ -174,6 +223,8 @@ class TricksController extends AbstractController
     * @Route("/delete/media/{id}", name="tricks_delete_media", methods={"GET","DELETE"})
     */
     public function deleteImage(Media $medium, Request $request){
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $data = json_decode($request->getContent(), true);
 
         // On vérifie si le token est valide

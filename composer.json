@@ -11,6 +11,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.7",
         "essence/essence": "^3.5",
+        "knplabs/knp-paginator-bundle": "^5.3",
         "laminas/laminas-code": "^3.4",
         "laminas/laminas-eventmanager": "^3.2",
         "phpdocumentor/reflection-docblock": "^5.2",

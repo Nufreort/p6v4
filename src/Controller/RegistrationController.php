@@ -16,6 +16,8 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class RegistrationController extends AbstractController
 {
@@ -93,9 +95,9 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/verify/email", name="app_verify_email")
      */
-    public function verifyUserEmail(Request $request, UsersPicturesRepository $usersPicturesRepository): Response
+    public function verifyUserEmail(Request $request, UsersRepository $usersRepository): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
 
         // validate email confirmation link, sets User::isVerified=true and persists
         try {
@@ -117,6 +119,7 @@ class RegistrationController extends AbstractController
      */
     public function profilUpdate(Request $request, UsersPicturesRepository $usersPicturesRepository, UsersRepository $usersRepository): Response
     {
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
             $user = $this->getUser();
 
             return $this->render('registration/userProfil.html.twig');
@@ -136,18 +139,20 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/user/{id}/delete", name="app_userProfilDelete")
      */
-    public function userProfilDelete(Request $request, User $users, EntityManagerInterface $em): Response
+    public function userProfilDelete(Request $request, Users $users, EntityManagerInterface $em): Response
     {
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
             if($this->isCsrfTokenValid('userProfilDeleting_' . $users->getId(), $request->request->get('csrf_token'))){
               $em->remove($users);
               $em->flush();
 
-              $session = new Session();
-              $session->invalidate();
+              //$session = new Session();
+              //$session->invalidate();
 
               //$this->addFlash('infos','Votre profil a bien été supprimée !');
 
-              return $this->redirectToRoute('app_logout');
+              return $this->redirectToRoute('tricks_index');
             }
 
             return $this->redirectToRoute('app_index');

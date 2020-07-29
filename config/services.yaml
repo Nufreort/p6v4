@@ -6,6 +6,7 @@
 parameters:
     media_directory: '%kernel.project_dir%/public/uploads'
     usersPictures: '%kernel.project_dir%/public/usersPictures'
+    img: '%kernel.project_dir%/public/img'
 
 services:
     # default configuration for services in *this* file

@@ -86,7 +86,7 @@ class CommentsController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="comments_delete", methods={"DELETE"})
+     * @Route("/delete/{id}", name="comments_delete")
      */
     public function delete(Request $request, Comments $comment): Response
     {
