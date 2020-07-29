@@ -77,6 +77,11 @@ class Users implements UserInterface
      */
     private $usersPictures;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $validator;
+
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
@@ -316,6 +321,18 @@ class Users implements UserInterface
         if ($usersPictures->getUser() !== $this) {
             $usersPictures->setUser($this);
         }
+
+        return $this;
+    }
+
+    public function getValidator(): ?int
+    {
+        return $this->validator;
+    }
+
+    public function setValidator(?int $validator): self
+    {
+        $this->validator = $validator;
 
         return $this;
     }
