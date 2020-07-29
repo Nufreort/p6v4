@@ -5,12 +5,15 @@ namespace App\Controller;
 use App\Entity\Tricks;
 use App\Entity\Comments;
 use App\Entity\Media;
+use App\Entity\Videos;
 use App\Form\TricksType;
 use App\Form\CommentsType;
+use App\Form\VideosType;
 use App\Repository\TricksRepository;
 use App\Repository\CommentsRepository;
 use App\Repository\UsersRepository;
 use App\Repository\MediaRepository;
+use App\Repository\VideosRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +30,7 @@ class TricksController extends AbstractController
      */
     public function index(TricksRepository $tricksRepository): Response
     {
+
         return $this->render('tricks/index.html.twig', [
             'tricks' => $tricksRepository->findAll(),
         ]);
@@ -35,7 +39,7 @@ class TricksController extends AbstractController
     /**
      * @Route("/new", name="tricks_new", methods={"GET","POST"})
      */
-    public function new(Request $request, MediaRepository $mediaRepository): Response
+    public function new(Request $request, MediaRepository $mediaRepository, VideosRepository $videosRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
@@ -69,15 +73,6 @@ class TricksController extends AbstractController
                 $med->setTricks($trick);
                 $trick->addMedium($med);
               }
-            //add video
-            dd($form->get('videos')->getData());
-            if(null !== $form->get('videos')->getData()){
-                $vid = $form->get('videos');
-                $video = new Video();
-                $video->setIframe($vid);
-                $video->setTricks($trick);
-                $trick->addVideo($video);
-            }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($trick);
@@ -86,8 +81,27 @@ class TricksController extends AbstractController
             return $this->redirectToRoute('tricks_index');
         }
 
+        //add video
+        $video = new Videos();
+        $video->setTricks($trick);
+
+        $videoForm = $this->createForm(VideosType::class, $video);
+        $videoForm->handleRequest($request);
+
+        if ($videoForm->isSubmitted() && $videoForm->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($video);
+            $entityManager->flush();
+
+
+            return $this->redirectToRoute('tricks_show', [
+              'id' => $trick->getId()
+            ]);
+        }
+
         return $this->render('tricks/new.html.twig', [
             'trick' => $trick,
+            'videoForm' => $videoForm->createView(),
             'form' => $form->createView(),
         ]);
     }
@@ -95,8 +109,27 @@ class TricksController extends AbstractController
     /**
      * @Route("/{id}", name="tricks_show", methods={"GET","POST"})
      */
-    public function show(Request $request, Tricks $trick, CommentsRepository $commentsRepository, UsersRepository $usersRepository, PaginatorInterface $paginator): Response
+    public function show(Request $request, Tricks $trick, CommentsRepository $commentsRepository, UsersRepository $usersRepository, VideosRepository $videosRepository, PaginatorInterface $paginator): Response
     {
+      //add video
+      $video = new Videos();
+      $video->setTricks($trick);
+
+      $videoForm = $this->createForm(VideosType::class, $video);
+      $videoForm->handleRequest($request);
+
+      if ($videoForm->isSubmitted() && $videoForm->isValid()) {
+          $entityManager = $this->getDoctrine()->getManager();
+          $entityManager->persist($video);
+          $entityManager->flush();
+
+
+          return $this->redirectToRoute('tricks_show', [
+            'id' => $trick->getId()
+          ]);
+      }
+
+      //add comment
         $user = $this->getUser();
         $comment = new Comments();
         $comment->setCommentAuthor($user);
@@ -128,11 +161,12 @@ class TricksController extends AbstractController
         );
 
         $authors = $usersRepository->findall();
-        //dd($comments);
+        //dd($trick);
         return $this->render('tricks/show.html.twig', [
             'comments' => $comments,
             'authors' => $authors,
             'trick' => $trick,
+            'videoForm' => $videoForm->createView(),
             'form' => $form->createView()
         ]);
 
@@ -154,7 +188,7 @@ class TricksController extends AbstractController
     /**
      * @Route("/{id}/edit", name="tricks_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Tricks $trick): Response
+    public function edit(Request $request, Tricks $trick, VideosRepository $videosRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -183,22 +217,32 @@ class TricksController extends AbstractController
               $trick->addMedium($med);
             }
 
-            //add video
-            if(null !== $form->get('videos')->getData()){
-                $vid = $form->get('videos');
-                $video = new Video();
-                $video->setIframe($vid);
-                $video->setTricks($trick);
-                $trick->addVideo($video);
-            }
-
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('tricks_index');
         }
 
+            //add video
+            $video = new Videos();
+            $video->setTricks($trick);
+
+            $videoForm = $this->createForm(VideosType::class, $video);
+            $videoForm->handleRequest($request);
+
+            if ($videoForm->isSubmitted() && $videoForm->isValid()) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($video);
+                $entityManager->flush();
+
+
+                return $this->redirectToRoute('tricks_show', [
+                  'id' => $trick->getId()
+                ]);
+            }
+
         return $this->render('tricks/edit.html.twig', [
             'trick' => $trick,
+            'videoForm' => $videoForm->createView(),
             'form' => $form->createView(),
         ]);
     }
@@ -215,6 +259,24 @@ class TricksController extends AbstractController
             $entityManager->remove($trick);
             $entityManager->flush();
         }
+
+        return $this->redirectToRoute('tricks_index');
+    }
+
+    /**
+     * @Route("/trick/{id}", name="tricks_deleting")
+     */
+    public function deleting(Request $request, Tricks $trick, TricksRepository $tricksRepository): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+
+        $trickId = $trick->getId();
+        $trick = $tricksRepository->findOneBy(['id' => $trickId]);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($trick);
+        $entityManager->flush();
 
         return $this->redirectToRoute('tricks_index');
     }

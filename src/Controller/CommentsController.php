@@ -6,6 +6,7 @@ use App\Entity\Comments;
 use App\Entity\Tricks;
 use App\Form\CommentsType;
 use App\Repository\CommentsRepository;
+use App\Repository\TricksRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -97,5 +98,24 @@ class CommentsController extends AbstractController
         }
 
         return $this->redirectToRoute('tricks_index');
+    }
+
+    /**
+     * @Route("/trick/comment/{id}", name="tricksComment_deleting")
+     */
+    public function commentDeleting(Request $request, Comments $comment, TricksRepository $tricksRepository, CommentsRepository $commentsRepository): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $commentId = $comment->getId();
+        $comment = $commentsRepository->findOneBy(['id' => $commentId]);
+        $trickId = $comment->getTrickId()->getId();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($comment);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('tricks_show', [
+          'id' => $trickId
+        ]);
     }
 }

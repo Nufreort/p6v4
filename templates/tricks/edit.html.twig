@@ -3,9 +3,11 @@
 {% block pageTitle %}<h1>Modifier la figure : {{trick.name}}</h1>{% endblock %}
 
 {% block content %}
+
     {{ include('tricks/_form.html.twig', {'button_label': 'Modifier'}) }}
+    {{ include('videos/_form.html.twig') }}
     {{ include('tricks/_delete_form.html.twig') }}
-    
+
     <a href="{{ path('tricks_index') }}">Retour à la page d'accueil</a>
 
 

@@ -43,10 +43,6 @@ class TricksType extends AbstractType
                 'mapped' => false,
                 'required' => false
             ])
-          /*  ->add('videos', TextareaType::class, [
-                'label' => 'Intégrer une vidéo youtube :',
-                'required' => false
-            ]) */
         ;
     }
 

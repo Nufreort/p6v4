@@ -117,44 +117,34 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/profil", name="app_userProfil")
      */
-    public function profilUpdate(Request $request, UsersPicturesRepository $usersPicturesRepository, UsersRepository $usersRepository): Response
+    public function userProfil(Request $request, UsersPicturesRepository $usersPicturesRepository, UsersRepository $usersRepository): Response
     {
             $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
             $user = $this->getUser();
 
             return $this->render('registration/userProfil.html.twig');
-        /*    $form = $this->createForm(RegistrationFormType::class, $user);
-            $form->handleRequest($request);
-            if($form->isSubmitted() && $form->isValid()){
-                $em->flush();
-                $this->addFlash('infos','Votre profil a bien été modifiée !');
-                return $this->redirectToRoute('app_index');
-              }
-            return $this->render('registration/userProfil.html.twig', [
-              'user' => $user,
-              'form' => $form->CreateView()
-              ]);*/
     }
 
     /**
      * @Route("/user/{id}/delete", name="app_userProfilDelete")
      */
-    public function userProfilDelete(Request $request, Users $users, EntityManagerInterface $em): Response
+    public function userProfilDelete(Request $request, Users $users, UsersRepository $usersRepository, EntityManagerInterface $em): Response
     {
             $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-            if($this->isCsrfTokenValid('userProfilDeleting_' . $users->getId(), $request->request->get('csrf_token'))){
-              $em->remove($users);
-              $em->flush();
+            $userId = $users->getId();
+            $user = $usersRepository->findOneBy(['id' => $userId]);
 
-              //$session = new Session();
-              //$session->invalidate();
+            $session = new Session();
+            $session->invalidate();
+            
+            $em->remove($user);
+            $em->flush();
+
+
 
               //$this->addFlash('infos','Votre profil a bien été supprimée !');
 
               return $this->redirectToRoute('tricks_index');
-            }
-
-            return $this->redirectToRoute('app_index');
     }
 }
