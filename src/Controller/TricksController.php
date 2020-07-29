@@ -272,7 +272,7 @@ class TricksController extends AbstractController
 
 
         $trickId = $trick->getId();
-        $trick = $tricksRepository->findOneBy(['id' => $trickId]);
+        $trick = $tricksRepository->findBy(['id' => $trickId]);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($trick);

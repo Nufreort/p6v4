@@ -6,9 +6,9 @@
 
       <h2>Media : </h2>
       {% if trick.media %}
-              <div class="d-flex flex-row bd-highlight justify-content-around mb-3">
+              <div class="row d-flex flex-row bd-highlight justify-content-around mb-3">
                 {% for medium in trick.media %}
-                <div>
+                <div class="row justify-content-around col-2" width="200" height="200">
                   <img src="{{ asset('../public/uploads/' ~ medium.name) }}" alt="Image" width="200" height="200">
                 </div>
                 {% else %}
@@ -25,7 +25,7 @@
       {% if trick.videos %}
               <div class="row d-flex flex-row bd-highlight justify-content-around mb-3">
                 {% for video in trick.videos %}
-                  <div class="row justify-content-around" width="200" height="200">
+                  <div class="row justify-content-around col-2" width="200" height="200">
                     {{video.iframe|raw}}
                   </div>
                   {% else %}

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Videos;
 use App\Form\VideosType;
 use App\Repository\VideosRepository;
+use App\Repository\TricksRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,7 +80,7 @@ class VideosController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="videos_delete", methods={"DELETE"})
+     * @Route("/{id}", name="videos_delete")
      */
     public function delete(Request $request, Videos $video): Response
     {
@@ -89,6 +90,25 @@ class VideosController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('videos_index');
+        return $this->redirectToRoute('tricks_index');
+    }
+
+    /**
+     * @Route("/{id}", name="videos_deleting")
+     */
+    public function videoDeleting(Request $request, Videos $video, TricksRepository $tricksRepository, VideosRepository $videosRepository): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $videoId = $video->getId();
+        $video = $videosRepository->findOneBy(['id' => $videoId]);
+        $trickId = $video->getTrickId()->getId();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($video);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('tricks_show', [
+          'id' => $trickId
+        ]);
     }
 }
