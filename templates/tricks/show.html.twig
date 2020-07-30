@@ -1,34 +1,193 @@
-{% extends 'layout.html.twig' %}
+{% extends 'layoutDiscussion.html.twig' %}
 
-{% block pageTitle %}Tricks{% endblock %}
+{% block pageTitle %}<h1>{{trick.name}}</h1>{% endblock %}
 
 {% block content %}
-    <h1>Tricks</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ trick.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
+    <div class="d-flex flex-column d-flex justify-content-center" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+      <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-primary  d-sm-block d-md-none d-lg-none d-xl-none" data-toggle="button" aria-pressed="false">
+          Voir les media
+        </button>
+      </div>
+      <div class="d-sm-block d-md-none d-lg-none d-xl-none collapse" id="collapseExample">
+        <h2>Media : </h2>
+        {% if trick.media %}
+                <div class="d-flex d-flex flex-column bd-highlight d-flex justify-content-center d-flex align-items-center d-flex flex-wrap mb-3">
+                  {% for medium in trick.media %}
+                  <div class="justify-content-around  col-6" width="200" height="200">
+                    <img src="{{ asset('../public/uploads/' ~ medium.name) }}" alt="Image" width="200" height="200">
+                  </div>
+                  {% else %}
+                      <div>
+                          <p>
+                            Pas encore d'image pour cette figure !
+                          </p>
+                      </div>
+                {% endfor %}
+                </div>
+        {% endif %}
+
+        <h2>Videos :</h2>
+        {% if trick.videos %}
+                <div class="d-flex d-flex flex-column bd-highlight d-flex justify-content-center d-flex flex-wrap mb-3">
+                  {% for video in trick.videos %}
+                    <div class="justify-content-around col-2" width="200" height="200">
+                      {{video.iframe|raw}}
+                    </div>
+                    {% else %}
+                        <div>
+                            <p>
+                              Pas encore de video pour cette figure !
+                            </p>
+                        </div>
+                {% endfor %}
+                </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="d-none d-md-block d-lg-block d-xl-block">
+      <h2>Media : </h2>
+      {% if trick.media %}
+              <div class="row d-flex flex-row bd-highlight justify-content-around mb-3">
+                {% for medium in trick.media %}
+                <div class="row justify-content-around col-2" width="200" height="200">
+                  <img src="{{ asset('../public/uploads/' ~ medium.name) }}" alt="Image" width="200" height="200">
+                </div>
+                {% else %}
+                    <div>
+                        <p>
+                          Pas encore d'image pour cette figure !
+                        </p>
+                    </div>
+              {% endfor %}
+              </div>
+      {% endif %}
+
+      <h2>Videos :</h2>
+      {% if trick.videos %}
+              <div class="row d-flex flex-row bd-highlight justify-content-around mb-3">
+                {% for video in trick.videos %}
+                  <div class="row justify-content-around col-2" width="200" height="200">
+                    {{video.iframe|raw}}
+                  </div>
+                  {% else %}
+                      <div>
+                          <p>
+                            Pas encore de video pour cette figure !
+                          </p>
+                      </div>
+              {% endfor %}
+              </div>
+      {% endif %}
+    </div>
+
+
+      <arcticle>
+        <h2 class="text-danger">{{ trick.name }}</h2>
+        <p>
+          {{ trick.description }}
+        </p>
+      </arcticle>
+
+
+    <table class="table table-striped">
+        <thead class="text-center">
+          <th>Nom de la figure : </th>
+          <th>Groupe : </th>
+          <th>Date de création: </th>
+          <th>Dernière modification : </th>
+        </thead>
+        <tbody class="text-center">
                 <td>{{ trick.name }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ trick.description }}</td>
-            </tr>
-            <tr>
-                <th>TrickGroup</th>
                 <td>{{ trick.trickGroup }}</td>
-            </tr>
+                <td>{{ trick.createdAt|format_datetime('short', 'short', locale='fr') }}</td>
+                <td>{{ trick.updatedAt|format_datetime('short', 'short', locale='fr') }}</td>
+
         </tbody>
     </table>
 
-    <a href="{{ path('tricks_index') }}">back to list</a>
+    {% if app.user %}
+      <div class="d-flex justify-content-end">
+        <a href="{{ path('tricks_edit', {'id': trick.id}) }}">
+          <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z"/>
+            <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z"/>
+          </svg>
+        </a>
+        <a href="#" onclick="event.preventDefault(); confirm('Etes-vous sûre de vouloir supprimer cet élément ?') &&
+        document.getElementById('js-trick-delete-form').submit();">
+          <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+          </svg>
+        </a>
+        <form id="js-trick-delete-form" action="{{ path('tricks_deleting', {'id': trick.id}) }}" method="POST" style="display: none;">
+            <input type="hidden" name="method" value="DELETE" />
+        </form>
+      </div>
+    {% endif %}
 
-    <a href="{{ path('tricks_edit', {'id': trick.id}) }}">edit</a>
+    <h2>Discussion</h2>
+    {% if app.user %}
+      <h3>Ajouter un message : </h3>
+      <div>
+        {{ include('comments/_form.html.twig') }}
+      </div>
+    {% endif %}
 
-    {{ include('tricks/_delete_form.html.twig') }}
+        <table class="table table-striped">
+            <thead class="text-center">
+                <tr>
+                    <th>Date</th>
+                    <th>Photo</th>
+                    <th>Auteur</th>
+                    <th>Message</th>
+                    {% if app.user %}
+                      <th>Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody class="text-center">
+            {% for comment in comments %}
+                <tr>
+                    <td>{{ comment.createdAt|format_datetime('short', 'short', locale='fr') }}</td>
+                    <td>
+                      {% if comment.commentAuthor.usersPictures.name %}
+                        <img src="usersPictures/{{comment.commentAuthor.usersPictures.name}}" width="100"/>
+                      {% else %}
+                          <img src="usersPictures/naruto.png" width="100"/>
+                      {% endif %}
+                    </td>
+                    <td>{{ comment.commentAuthor.lastName ~ ' ' ~ comment.commentAuthor.firstName}}</td>
+                    <td>{{ comment.content }}</td>
+                    {% if app.user %}
+                      <td>
+                          <a href="{{ path('comments_edit', {'id': comment.id}) }}">
+                            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z"/>
+                              <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z"/>
+                            </svg>
+                          </a>
+                          <a href="{{ path('tricksComment_deleting', {'id': comment.id}) }}">
+                            <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                            </svg>
+                          </a>
+                      </td>
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Pas encore de message à propos de cette figure. Soyez le premier à en laisser un !</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center">
+          {{ knp_pagination_render(comments) }}
+        </div>
+    <a href="{{ path('tricks_index') }}">Retour à la page d'accueil</a>
 {% endblock %}

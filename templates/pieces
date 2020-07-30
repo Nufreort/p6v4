@@ -1,0 +1,45 @@
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ comments.id }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ comments.content }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Content</th>
+                <th>CommentAuthor</th>
+                <th>TrickId</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for comment in comments %}
+            <tr>
+                <td>{{ comment.id }}</td>
+                <td>{{ comment.content }}</td>
+                <td>{{ comment.commentAuthor }}</td>
+                <td>{{ comment.trickId }}</td>
+                <td>
+                    <a href="{{ path('comments_show', {'id': comment.id}) }}">show</a>
+                    <a href="{{ path('comments_edit', {'id': comment.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>

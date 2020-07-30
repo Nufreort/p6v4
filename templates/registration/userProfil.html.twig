@@ -1,0 +1,48 @@
+{% extends 'layout.html.twig' %}
+
+{% block pageTitle %}<h1>Mon profil utilisateur !</h1>{% endblock %}
+
+{% block content %}
+<div class="container">
+    <p>
+    <span class="font-weight-bold">Nom : </span>
+    {{ app.user.lastName }}
+    </p>
+    <p>
+      <span class="font-weight-bold">Prénom : </span>
+      {{ app.user.firstName }}
+    </p>
+    <p>
+      <span class="font-weight-bold">Photo de profil :</span>
+      <div class="">
+          <img src="usersPictures/{{app.user.usersPictures.name}}" width="100" />
+      </div>
+    </p>
+    <p>
+      <span class="font-weight-bold">Email : </span>
+      {{ app.user.email }}
+    </p>
+    <p>
+      <span class="font-weight-bold">Date d'inscription : </span>
+      {{ app.user.createdAt|date('d/m/Y') }}
+    </p>
+    <p>
+      <a href="#" onclick="event.preventDefault(); confirm('Etes-vous sûre de vouloir supprimer votre profil ?') &&
+      document.getElementById('js-userProfil-delete-form').submit();" class="text-danger">Supprimer mon profil</a>
+    </p>
+    <p>
+        <a href="{{path('tricks_index')}}">Retourner à la page d'accueil</a>
+    </p>
+</div>
+
+    <form id="js-userProfil-delete-form" action="{{path('app_userProfilDelete',{id: app.user.id})}}" method="POST" style="display: none;">
+        <input type="hidden" name="csrf_token" value="{{csrf_token('userProfilDeleting_' ~ app.user.id)}}" />
+        <input type="hidden" name="method" value="DELETE" />
+    </form>
+{% endblock %}
+
+{% block pageFooter %}{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/images.js') }}"></script>
+{% endblock %}

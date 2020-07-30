@@ -1,0 +1,8 @@
+{% extends 'layout.html.twig' %}
+
+{% block pageTitle %}<h1>Réinitialiser votre mot de passe</h1>{% endblock %}
+
+{% block content %}
+    <p>Un email vous a été envoyer pour réinitialiser votre mot de passe. Ce lien expire dans {{ tokenLifetime|date('g') }} heure(s).</p>
+    <p>SI vous n'avez pas reçu l'email, pensez à vérifier vos spams ou <a href="{{ path('app_forgot_password_request') }}">réessayer</a>.</p>
+{% endblock %}

@@ -68,10 +68,14 @@ class UsersAuthenticator extends AbstractFormLoginAuthenticator implements Passw
         }
 
         $user = $this->entityManager->getRepository(Users::class)->findOneBy(['email' => $credentials['email']]);
-
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
+            throw new CustomUserMessageAuthenticationException('E-mail non identifié.');
+        }
+
+        elseif($user->isVerified() == false)
+        {
+            throw new CustomUserMessageAuthenticationException('Veuillez valider votre e-mail pour vous connecter.');
         }
 
         return $user;
@@ -96,8 +100,9 @@ class UsersAuthenticator extends AbstractFormLoginAuthenticator implements Passw
             return new RedirectResponse($targetPath);
         }
 
-        // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        // For example :
+        return new RedirectResponse($this->urlGenerator->generate('tricks_index'));
+        //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 
     protected function getLoginUrl()

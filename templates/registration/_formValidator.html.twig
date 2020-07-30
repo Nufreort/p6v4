@@ -1,0 +1,6 @@
+{% form_theme userProfilValidator 'bootstrap_4_layout.html.twig' %}
+
+{{ form_start(userProfilValidator) }}
+    {{ form_widget(userProfilValidator) }}
+    <button class="btn btn-primary">{{ button_label|default('Envoyer') }}</button>
+{{ form_end(userProfilValidator) }}
