@@ -4,6 +4,50 @@
 
 {% block content %}
 
+    <div class="d-flex flex-column d-flex justify-content-center" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+      <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-primary  d-sm-block d-md-none d-lg-none d-xl-none" data-toggle="button" aria-pressed="false">
+          Voir les media
+        </button>
+      </div>
+      <div class="d-sm-block d-md-none d-lg-none d-xl-none collapse" id="collapseExample">
+        <h2>Media : </h2>
+        {% if trick.media %}
+                <div class="d-flex d-flex flex-column bd-highlight d-flex justify-content-center d-flex align-items-center d-flex flex-wrap mb-3">
+                  {% for medium in trick.media %}
+                  <div class="justify-content-around  col-6" width="200" height="200">
+                    <img src="{{ asset('../public/uploads/' ~ medium.name) }}" alt="Image" width="200" height="200">
+                  </div>
+                  {% else %}
+                      <div>
+                          <p>
+                            Pas encore d'image pour cette figure !
+                          </p>
+                      </div>
+                {% endfor %}
+                </div>
+        {% endif %}
+
+        <h2>Videos :</h2>
+        {% if trick.videos %}
+                <div class="d-flex d-flex flex-column bd-highlight d-flex justify-content-center d-flex flex-wrap mb-3">
+                  {% for video in trick.videos %}
+                    <div class="justify-content-around col-2" width="200" height="200">
+                      {{video.iframe|raw}}
+                    </div>
+                    {% else %}
+                        <div>
+                            <p>
+                              Pas encore de video pour cette figure !
+                            </p>
+                        </div>
+                {% endfor %}
+                </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="d-none d-md-block d-lg-block d-xl-block">
       <h2>Media : </h2>
       {% if trick.media %}
               <div class="row d-flex flex-row bd-highlight justify-content-around mb-3">
@@ -37,6 +81,8 @@
               {% endfor %}
               </div>
       {% endif %}
+    </div>
+
 
       <arcticle>
         <h2 class="text-danger">{{ trick.name }}</h2>
