@@ -32,9 +32,9 @@
 <div id="tricksIndex" class="container-fluid collapse">
     <h2 class="text-center">Nos plus beaux tricks !</h2>
     <br />
-        <div class="row d-flex justify-content-around">
+        <div class="row d-flex flex-row bd-highlight justify-content-around mb-3 d-flex flex-wrap">
           {% for trick in tricks %}
-          <div class="card col-3">
+          <div class="row justify-content-around d-flex flex-nowrap col-4 card border border-dark">
             {% if trick.media %}
                 {% for medium in trick.media|slice(0,1) %}
                     <img src="{{ asset('uploads/' ~ medium.name) }}" class="card-img-top" alt="..." width="25" height="200">
@@ -47,7 +47,7 @@
               <div class="mr-auto p-2">
                   <a href="{{ path('tricks_show', {'id': trick.id}) }}" class="font-weight-bold">{{ trick.name }}</a>
               </div>
-              <div class="p-2">
+              <div class="p-2 text-nowrap">
                 {% if app.user %}
                 <p>
                   <a href="{{ path('tricks_edit', {'id': trick.id}) }}">
@@ -56,7 +56,7 @@
                       <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z"/>
                     </svg>
                   </a>
-                  <a href="{{ path('tricks_deleting', {'id': trick.id}) }}">
+                  <a href="{{ path('tricks_edit', {'id': trick.id}) }}">
                     <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
                         <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>

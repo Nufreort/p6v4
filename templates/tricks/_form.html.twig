@@ -10,6 +10,12 @@
                       {{ include('media/_delete_form.html.twig') }}
                       {# On ajoute un lien permettant de supprimer une image (sera géré en Ajax) #}
                   </div>
+            {% else %}
+                  <div>
+                      <p>
+                        Pas encore d'image pour cette figure !
+                      </p>
+                  </div>
             {% endfor %}
             </div>
         {% endif %}

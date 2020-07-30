@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Users;
 use App\Entity\UsersPictures;
 use App\Form\RegistrationFormType;
-use App\Form\UserProfilValidatorType;
 use App\Repository\UsersPicturesRepository;
 use App\Repository\UsersRepository;
 use App\Security\EmailVerifier;
@@ -16,10 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
+use App\Security\UsersAuthenticator;
 
 class RegistrationController extends AbstractController
 {
@@ -33,16 +33,14 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, UsersPicturesRepository $usersPicturesRepository): Response
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, UsersAuthenticator $authenticator): Response
     {
         $user = new Users();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-
-
         if ($form->isSubmitted() && $form->isValid()) {
-            // usersPicutres
+          // usersPicutres
               $picture = $form->get('usersPictures')->getData();
 
               if($picture)
@@ -71,9 +69,7 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-            $userValidator = random_int(0 , 9999);
 
-            $user->setValidator($userValidator);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
@@ -85,15 +81,17 @@ class RegistrationController extends AbstractController
                     ->to($user->getEmail())
                     ->subject('Confirmer votre e-mail')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
-                    ->context([
-                      'codeValidator' => $userValidator
-                    ])
             );
             // do anything else you need here, like send an email
-            $this->addFlash('warning', 'Veuillez valider votre adresse e-mail pour vous connecter.');
-            return $this->redirectToRoute('app_userProfilValidator');
+            return $guardHandler->authenticateUserAndHandleSuccess(
+                $user,
+                $request,
+                $authenticator,
+                'main' // firewall name in security.yaml
+            );
         }
-
+        
+        $this->addFlash('warning', 'Veuillez valider votre adresse e-mail pour vous connecter.');
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
@@ -102,47 +100,23 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/verify/email", name="app_verify_email")
      */
-    public function verifyUserEmail(Request $request, UsersRepository $usersRepository, UserInterface $user): Response
+    public function verifyUserEmail(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         // validate email confirmation link, sets User::isVerified=true and persists
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
         } catch (VerifyEmailExceptionInterface $exception) {
-        $this->addFlash('verify_email_error', 'Veuillez valider le lien de confirmation que vous avez reçu par e-mail ou bien créer un compte pour vous connecter.'/* $exception->getReason()*/);
+            $this->addFlash('verify_email_error', 'Veuillez valider le lien de confirmation que vous avez reçu par e-mail ou bien créer un compte pour vous connecter.');
 
             return $this->redirectToRoute('app_login');
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->handleEmailConfirmation();
         $this->addFlash('success', 'Votre adresse e-mail a bient été vérifiée !');
+
         return $this->redirectToRoute('tricks_index');
-    }
-
-    /**
-     * @Route("/profilValidator", name="app_userProfilValidator")
-     */
-    public function userProfilValitor(Request $request, UsersPicturesRepository $usersPicturesRepository, UsersRepository $usersRepository): Response
-    {
-
-            $users = $usersRepository->findALl();
-
-            $form = $this->createForm(UserProfilValidatorType::class, $users);
-
-              if ($form->isSubmitted() && $form->isValid()) {
-
-                $user = $users->findBy(
-                  ['email' => $form->get('email')],
-                  ['password' => $form->get('password')],
-                  ['validator' => $form->get('codeValidator')]
-                );
-                dd($user);
-                  return $this->redirectToRoute('tricks_index');
-              }
-
-            return $this->render('registration/userProfilValidator.html.twig',[
-                'userProfilValidator' => $form->createView()
-            ]);
     }
 
     /**
@@ -173,7 +147,6 @@ class RegistrationController extends AbstractController
             $em->flush();
 
               //$this->addFlash('infos','Votre profil a bien été supprimée !');
-
               return $this->redirectToRoute('tricks_index');
     }
 }
